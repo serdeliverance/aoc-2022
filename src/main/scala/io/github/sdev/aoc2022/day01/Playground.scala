@@ -1,10 +1,11 @@
 package io.github.sdev.aoc2022.day01
 
-import io.github.sdev.aoc2022.utils.Utils.readInput
+import io.github.sdev.aoc2022.utils.Utils.{ filenameOf, readInput }
 
 object Playground:
 
   @main def solution() =
-    val lines  = readInput("input-day01part1.txt")
-    val result = Day01Part1.solution(lines)
+    val filename = filenameOf(1, 1)
+    val lines    = readInput(filename)
+    val result   = Day01Part1.solution(lines)
     println(result)

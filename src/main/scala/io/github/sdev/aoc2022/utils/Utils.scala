@@ -7,3 +7,6 @@ object Utils:
 
   def readInput(filename: String) =
     Source.fromResource(filename).getLines().toList
+
+  def filenameOf(day: Int, part: Int) =
+    s"input-day${if (day < 10) "0" + day else day}part$part.txt"
