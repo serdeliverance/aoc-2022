@@ -8,9 +8,9 @@ object Day02Part1:
     games.map(g => g.myMove.points + g.toGameResult().points).sum
 
 enum Move(val points: Int):
-  case Rock     extends Move(1)
-  case Paper    extends Move(2)
-  case Scissors extends Move(3)
+  case Rock    extends Move(1)
+  case Paper   extends Move(2)
+  case Scissor extends Move(3)
 
 enum GameResult(val points: Int):
   case Win  extends GameResult(6)
@@ -23,13 +23,13 @@ object GameEntity:
 
   case class Game(myMove: Move, opponentsMove: Move):
     def toGameResult() = (myMove, opponentsMove) match
-      case (Rock, Scissors)     => Win
-      case (Scissors, Paper)    => Win
-      case (Paper, Rock)        => Win
-      case (Scissors, Scissors) => Draw
-      case (Paper, Paper)       => Draw
-      case (Rock, Rock)         => Draw
-      case (_, _)               => Loss
+      case (Rock, Scissor)    => Win
+      case (Scissor, Paper)   => Win
+      case (Paper, Rock)      => Win
+      case (Scissor, Scissor) => Draw
+      case (Paper, Paper)     => Draw
+      case (Rock, Rock)       => Draw
+      case (_, _)             => Loss
 
 object GameParser:
   import GameEntity.Game
@@ -40,9 +40,9 @@ object GameParser:
       .filter(line => line matches "[ABC] [XYZ]")
       .map(line => Game(convertToMove(line.charAt(2)), convertToMove(line.charAt(0))))
 
-  private def convertToMove(c: Char): Move =
+  def convertToMove(c: Char): Move =
     c match
       case 'A' | 'X' => Rock
       case 'B' | 'Y' => Paper
-      case 'C' | 'Z' => Scissors
+      case 'C' | 'Z' => Scissor
       case _         => throw IllegalArgumentException()
