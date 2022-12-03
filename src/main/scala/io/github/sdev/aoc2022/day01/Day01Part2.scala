@@ -11,6 +11,6 @@ object Day01Part2:
   @tailrec
   private def calculateTop3CaloriesSum(currentList: List[Int], listOfCaloriesSum: List[Int], input: List[String]): Int =
     if (input.isEmpty) (currentList.sum :: listOfCaloriesSum).sorted.reverse.take(3).sum
-    else if (input.head.trim().isEmpty()) calculateTop3CaloriesSum(List.empty, currentList.sum :: listOfCaloriesSum, input.tail )
+    else if (input.head.trim().isEmpty())
+      calculateTop3CaloriesSum(List.empty, currentList.sum :: listOfCaloriesSum, input.tail)
     else calculateTop3CaloriesSum(input.head.toInt :: currentList, listOfCaloriesSum, input.tail)
-    
