@@ -5,6 +5,5 @@ import scala.io.Source
 
 object Utils:
 
-    def readInput(filename: String) =
-        Source.fromResource(filename).getLines().toList
-
+  def readInput(filename: String) =
+    Source.fromResource(filename).getLines().toList
