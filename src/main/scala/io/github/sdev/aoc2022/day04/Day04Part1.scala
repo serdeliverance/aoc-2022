@@ -3,10 +3,15 @@ package io.github.sdev.aoc2022.day04
 object Day04Part1:
 
   def solution(input: List[String]) =
+    countOverlaps(input, oneContainsAnother)
+
+  def countOverlaps(input: List[String], overlapCriteria: (Range, Range) => Boolean) =
     input
-      .filter(line => line matches "([0-9]|([1-9][0-9]+))-([0-9]|([1-9][0-9]+)),([0-9]|([1-9][0-9]+))-([0-9]|([1-9][0-9]+))")
+      .filter(line =>
+        line matches "([0-9]|([1-9][0-9]+))-([0-9]|([1-9][0-9]+)),([0-9]|([1-9][0-9]+))-([0-9]|([1-9][0-9]+))"
+      )
       .map(parse)
-      .count(rangePair => oneContainsAnother(rangePair._1, rangePair._2))
+      .count(pairOfRanges => overlapCriteria(pairOfRanges._1, pairOfRanges._2))
 
   private def parse(raw: String): (Range, Range) =
     val splittedInput = raw.split(",")
