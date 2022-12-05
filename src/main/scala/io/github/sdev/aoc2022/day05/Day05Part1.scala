@@ -4,7 +4,9 @@ import scala.collection.mutable.Stack
 import scala.util.Try
 import scala.util.Success
 import scala.collection.mutable.Queue
+import scala.util.Failure
 
+// TODO exercise variant: refactor to use a pure functional programming approach (no mutable state)
 object Day05Part1:
   import Parser.parse
 
@@ -37,36 +39,71 @@ object Day05Part1:
       .mkString
 
 object Parser:
-    import Day05Part1.Cmd
+  import Day05Part1.Cmd
 
-    sealed trait InputType
-    case class StackInput(line: String) extends InputType
-    case class StackCount(count: Int) extends InputType
-    case object SectionSeparator extends InputType
-    case class Command(quantity: Int, from: Int, to: Int) extends InputType
+  private val WHITESPACE_REGEX = " +"
 
-    def parse(input: List[String]): (Array[Stack[String]], List[Cmd]) =
-        var processingCommands = false
-        val eof = input.size - 1
-        var i = 0
+  sealed trait InputType
+  case class StackInput(line: String)                   extends InputType
+  case class StackCount(count: Int)                     extends InputType
+  case object NonInput                                  extends InputType
+  case class Command(quantity: Int, from: Int, to: Int) extends InputType
 
-        var stackCount = 0
+  def parse(input: List[String]): (Array[Stack[String]], List[Cmd]) =
+    var processingCommands = false
+    val eof                = input.size - 1
+    var i                  = 0
 
-        var stackInput = Queue[String]()
+    var stackCount = 0
 
-        while(i <= eof) {
-            val line = parseLine(input(i))
-            line match
-                case StackInput(line) => stackInput.enqueue(line)
-                case StackCount(count) => stackCount = count
-                case SectionSeparator => ()     // do nothing
-                case Command(quantity, from, to) => // TODO push commands to a queue        
-        }
+    var stackInput = Queue[String]()
 
-        (null, null)
-    
-    // TODO
-    private def parseLine(line: String): InputType = ???
+    while (i <= eof) {
+      val line = parseLine(input(i))
+      line match
+        case StackInput(line)            => stackInput.enqueue(line)
+        case StackCount(count)           => stackCount = count
+        case Command(quantity, from, to) => // TODO push commands to a queue
+        case NonInput                    => ()
 
-    // TODO
-    private def parseHeader(line: String): List[Int] = ???
+      i += 1
+    }
+
+    (null, null)
+
+  private def parseLine(line: String): InputType =
+    if (isHeaderLine(line)) parseHeader(line)
+    else if (isStackLine(line)) parseStackLine(line)
+    else if (isCommandLine(line)) parseCommandLine(line)
+    else NonInput
+
+  private def parseHeader(line: String): StackCount =
+    val count = line.split(WHITESPACE_REGEX).map(_.toInt).size
+    StackCount(count)
+
+  private def isHeaderLine(line: String) =
+    line
+      .split(WHITESPACE_REGEX)
+      .headOption
+      .map(h =>
+        Try(h.toInt) match
+          case Failure(_) => false
+          case Success(_) => true
+      )
+      .getOrElse(false)
+
+  private def parseCommandLine(line: String) =
+    val splitted = line.split(WHITESPACE_REGEX)
+    val quantity = splitted(1).toInt
+    val from     = splitted(3).toInt
+    val to       = splitted(5).toInt
+    Command(quantity, from, to)
+
+  // TODO add regex to have a strong line validation
+  private def isCommandLine(line: String) = line.startsWith("move")
+
+  private def isStackLine(line: String) =
+    line.split(" +").headOption.map(first => first matches "\\[[A-Z]\\]").getOrElse(false)
+
+  private def parseStackLine(line: String) =
+    StackInput(line)
