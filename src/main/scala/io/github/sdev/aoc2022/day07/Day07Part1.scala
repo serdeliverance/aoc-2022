@@ -5,7 +5,7 @@ object Day07Part1:
 
     def solution(input: List[String]) =
         val fileSystem = parse(input)
-        fileSystem.root.calculateAllSizes().filter(_ < 100_000).sum
+        fileSystem.root.allNodes().map(_.size).filter(_ < 100_000).sum
 
     case class FileSystem(root: Root)
 
@@ -40,13 +40,7 @@ object Day07Part1:
     }
 
     extension (root: Root)
-        def calculateAllSizes(): List[Int] =
-            root.content.map {
-                    case Directory(_, content) => ???
-                    case File(_, size) => size
-                    case _ => 0
-                
-            }
+        def allNodes(): List[FileSystemNode] = ???
 
     sealed trait Command
     case object Ls extends Command
